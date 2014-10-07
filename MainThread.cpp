@@ -11,14 +11,17 @@ void MainThread::run()
 			return;
 
 		QTextStream in (&file);
-		QList<QString> asList;
-		int x = 0;
+		//int x = 0;
 
 		while (!in.atEnd()) {
-			asList.push_back(in.readLine());
-			std::cout << asList.at(x++).toStdString() << "\n";
+			asList->push_back(in.readLine());
+			//std::cout << asList->at(x++).toStdString() << "\n";
 		}
 	}
+
+	Optimizer *pOptimizer = new Optimizer(*asList);
+	pOptimizer->compile();
+	delete pOptimizer;
 
 	Q_EMIT(finished());
 }//end run

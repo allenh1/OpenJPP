@@ -13,7 +13,7 @@ public:
 	MainThread(QObject *parent, int argc, QString argv) : QObject(parent),
 															   m_argc(argc),
 															   m_argv(argv)
-	{ connect(this, SIGNAL(finished()), parent, SLOT(quit())); }
+	{ asList = new QList<QString>(); connect(this, SIGNAL(finished()), parent, SLOT(quit())); }
 
 	Q_SIGNAL void finished();
 
@@ -21,5 +21,6 @@ public:
 private:
 	int m_argc;
 	QString m_argv;
+	QList<QString> *asList;
 };
 #endif
