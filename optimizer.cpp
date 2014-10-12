@@ -4,8 +4,8 @@ Optimizer::Optimizer(QList<QString> fileContents)
 {
 	m_status = true; //initially, we're good (hopefully)
 	m_fileContents = fileContents; 
-
-	int x = 0, m_linesModified = 0; QString *line = NULL;//initialize as null.
+	m_linesModified = 0;
+	int x = 0; QString *line = NULL;//initialize as null.
 
 	while (!fileContents[x].contains("public class"))
 		line = &fileContents[++x];
@@ -17,7 +17,66 @@ Optimizer::Optimizer(QList<QString> fileContents)
 
 void Optimizer::optimize()
 {
+	strengthReduce();
+}
 
+void Optimizer::strengthReduce()
+{
+	//This optimization replaces multiplication/division by multiples of 2 with a bit shift.
+
+	for (int x = 0; x < m_fileContents.size(); ++x)
+	{
+		//Skip comments
+		if (m_fileContents[x].contains("**"))
+			while (!m_fileContents[x++].contains("*/")) { /** just chill **/ }
+
+		if (m_fileContents[x].contains("*"))
+		{
+			//possible multiplication
+			bool ok;
+			QString * line = &m_fileContents[x];
+			int number = line->mid(line->indexOf('*'), line->indexOf(';')).replace(QString(" "), 
+						 QString("")).replace(QString("*"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
+			if (ok && number % 2 == 0) {
+				//no encoding errors and an even number, so we proceed.
+				int shifter = 0;
+				while ((number % 2 == 0 || number == 1) && number != 0){ number /= 2; shifter++; }
+				shifter--;
+				if (number == 0){
+					QString shift(" << "); QString num; num.setNum(shifter);
+					shift += num; shift += ";";
+					line->resize(line->indexOf("*") - 1);
+					m_fileContents[x].append(shift);
+					m_linesModified++;
+				}//power of two
+			}
+		}
+
+		else if (m_fileContents[x].contains("/") && !m_fileContents[x].contains("//"))
+		{
+			//possible division
+			bool ok; int divider = 0;
+			QString * line = &m_fileContents[x];
+			int number = line->mid(line->indexOf('/'), line->indexOf(';')).replace(QString(" "), 
+						 QString("")).replace(QString("/"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
+			std::cout<<"\nNumber: " << number << "\n";
+			while (number % 2 == 0 && number != 0){ 
+				number /= 2; divider++;
+				std::cout<<"number: " << number << "\t divider: " << divider << "\n";
+			}
+			// divider--; divider--;
+			std::cout<<"number: " << number << "\t divider: " << divider << "\n";
+			if (ok && number == 1) {
+				//no encoding errors and an even number, so we proceed.
+
+				QString shift(" >> "); QString num; num.setNum(divider);
+				shift += num; shift += ";";
+				line->resize(line->indexOf("/") - 1);
+				m_fileContents[x].append(shift);
+				m_linesModified++;
+			}
+		}
+	}
 }
 
 void Optimizer::compile()

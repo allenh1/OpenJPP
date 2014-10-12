@@ -22,6 +22,7 @@ private:
 
 	QString m_className;
 	QList<QString> m_fileContents;
-	
+
 	void optimize();
+	void strengthReduce();
 };

@@ -52,24 +52,20 @@ public class Pixel {
 
 	public static void main(String[] args) {
 		Pixel p1 = new Pixel (0xFFFF00FF);
-		System.out.printf("rgb = (%2x, %2x, %2x)\n", p1.getRed(), p1.getGreen(), p1.getBlue());
-		System.out.printf("rgb = (%d, %d, %d)\n", p1.getRed(), p1.getGreen(), p1.getBlue());
 		    
 		Pixel p2 = new Pixel(0xFF43BF11);
-		System.out.printf("rgb = (%2x, %2x, %2x)\n", p2.getRed(), p2.getGreen(), p2.getBlue());
-		System.out.printf("rgb = (%d, %d, %d)\n", p2.getRed(), p2.getGreen(), p2.getBlue());
 
 		Pixel p3 = new Pixel(0xFF000000);
-		System.out.printf("rgb = (%d, %d, %d)\n", p3.getRed(), p3.getGreen(), p3.getBlue());
 
-		p3.setRed(42);
-		p3.setGreen(18);
-		p3.setBlue(225);
-		System.out.printf("rgb = (%d, %d, %d)\n", p3.getRed(), p3.getGreen(), p3.getBlue());
-		        
-		p3.setRed(-1);
-		p3.setGreen(500);
-		p3.setBlue(1000);
+		int newRed = 12;
+		int newGreen = newRed * 4;
+		int newBlue = newRed / 12;
+		newBlue = newBlue * 100;
+		newBlue = newBlue / 32;
+
+		p3.setRed(newRed);
+		p3.setGreen(newGreen);
+		p3.setBlue(newBlue);
 		System.out.printf("rgb = (%d, %d, %d)\n", p3.getRed(), p3.getGreen(), p3.getBlue());
 	}
 }
