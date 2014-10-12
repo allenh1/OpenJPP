@@ -13,14 +13,13 @@ void MainThread::run()
 		QTextStream in (&file);
 		//int x = 0;
 
-		while (!in.atEnd()) {
+		while (!in.atEnd())
 			asList->push_back(in.readLine());
-			//std::cout << asList->at(x++).toStdString() << "\n";
-		}
 	}
 
 	Optimizer *pOptimizer = new Optimizer(*asList);
 	pOptimizer->compile();
+	std::cout << "Compile finished. Lines changed: " << pOptimizer->getLinesModified() << "\n";
 	delete pOptimizer;
 
 	Q_EMIT(finished());

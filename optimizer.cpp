@@ -5,7 +5,7 @@ Optimizer::Optimizer(QList<QString> fileContents)
 	m_status = true; //initially, we're good (hopefully)
 	m_fileContents = fileContents; 
 
-	int x = 0; QString *line = NULL;//initialize as null.
+	int x = 0, m_linesModified = 0; QString *line = NULL;//initialize as null.
 
 	while (!fileContents[x].contains("public class"))
 		line = &fileContents[++x];
@@ -15,8 +15,15 @@ Optimizer::Optimizer(QList<QString> fileContents)
 	m_className.resize(m_className.indexOf(' '));
 }
 
+void Optimizer::optimize()
+{
+
+}
+
 void Optimizer::compile()
 {
+	optimize();
+
 	QString filename = m_className;
 	filename = filename.append(".java");
 	filename.prepend("/tmp/");
@@ -62,3 +69,6 @@ void Optimizer::compile()
 	if (m_status)
 		std::cout<<"Warning: errors may have occured.\n";
 }
+
+const int & Optimizer::getLinesModified(){ return m_linesModified; }
+const QString & Optimizer::getClassName(){ return m_className; }
