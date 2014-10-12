@@ -13,7 +13,14 @@ public:
 	const QList<QString> & getFile();
 
 	void compile();
+
+	const QString & getClassName();
 private:
-	void updateFile();
+	bool m_status;
+	int linesModified;
+
+	QString m_className;
 	QList<QString> m_fileContents;
+
+	void updateFile();
 };
