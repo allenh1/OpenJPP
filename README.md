@@ -6,7 +6,7 @@ Description:
 
 Status:
 =======
- - Well, it's not doing any optimization yet. Soon to come!
+ - Currently, we do some strength reduction! Yippee!
 
 
 Contributions:
