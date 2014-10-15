@@ -67,5 +67,8 @@ public class Pixel {
 		p3.setGreen(newGreen);
 		p3.setBlue(newBlue);
 		System.out.printf("rgb = (%d, %d, %d)\n", p3.getRed(), p3.getGreen(), p3.getBlue());
+
+		for (int x = 0, y = 0; x < 1000000000; ++x)
+			y = x * 4;
 	}
 }

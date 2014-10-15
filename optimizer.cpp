@@ -49,6 +49,18 @@ void Optimizer::strengthReduce()
 					m_fileContents[x].append(shift);
 					m_linesModified++;
 				}//power of two
+
+				else if (number > 1) {
+					QString shift(" << "); QString num1; QString num2; num1.setNum(number); num2.setNum(++shifter);
+					num1 += QString(")");
+					line->replace(QString("= "), QString("= ("));
+					shift.prepend(num1); shift.prepend(" * "); shift.append(num2); shift.append(";");
+					line->resize(line->indexOf("*") - 1);
+					m_fileContents[x].append(shift);
+					m_linesModified++;
+				}
+
+				//delete line;
 			}
 		}
 
@@ -59,13 +71,13 @@ void Optimizer::strengthReduce()
 			QString * line = &m_fileContents[x];
 			int number = line->mid(line->indexOf('/'), line->indexOf(';')).replace(QString(" "), 
 						 QString("")).replace(QString("/"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
-			std::cout<<"\nNumber: " << number << "\n";
+			//std::cout<<"\nNumber: " << number << "\n";
 			while (number % 2 == 0 && number != 0){ 
 				number /= 2; divider++;
-				std::cout<<"number: " << number << "\t divider: " << divider << "\n";
+				//std::cout<<"number: " << number << "\t divider: " << divider << "\n";
 			}
 			// divider--; divider--;
-			std::cout<<"number: " << number << "\t divider: " << divider << "\n";
+			//std::cout<<"number: " << number << "\t divider: " << divider << "\n";
 			if (ok && number == 1) {
 				//no encoding errors and an even number, so we proceed.
 
@@ -75,6 +87,8 @@ void Optimizer::strengthReduce()
 				m_fileContents[x].append(shift);
 				m_linesModified++;
 			}
+
+			//delete line;
 		}
 	}
 }
