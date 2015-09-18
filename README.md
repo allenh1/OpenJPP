@@ -1,12 +1,10 @@
 Description:
 ============
- - This is an attempt at writing a java code optimizer.
- - Generates an "optimized" class, then calls javac.
+ - This is a simple C++ application that extends some Java syntax.
+ - Provides pointers, 
+ - Generates the code as Java code, then calls javac.
+ - The code also attempts to optimize the code somewhat.
  - Outputs the number of lines modified.
-
-Status:
-=======
- - Currently, we do some strength reduction! Yippee!
 
 
 Contributions:
