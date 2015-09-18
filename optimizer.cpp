@@ -18,6 +18,7 @@ Optimizer::Optimizer(QList<QString> fileContents)
 void Optimizer::optimize()
 {
 	strengthReduce();
+	//TODO: inline(), 
 }
 
 void Optimizer::strengthReduce()
@@ -26,7 +27,7 @@ void Optimizer::strengthReduce()
 
 	for (int x = 0; x < m_fileContents.size(); ++x)
 	{
-		//Skip comments
+		//Skip comments, we assume they are denoted by "**"
 		if (m_fileContents[x].contains("**"))
 			while (!m_fileContents[x++].contains("*/")) { /** just chill **/ }
 
@@ -59,8 +60,6 @@ void Optimizer::strengthReduce()
 					m_fileContents[x].append(shift);
 					m_linesModified++;
 				}
-
-				//delete line;
 			}
 		}
 
@@ -71,13 +70,10 @@ void Optimizer::strengthReduce()
 			QString * line = &m_fileContents[x];
 			int number = line->mid(line->indexOf('/'), line->indexOf(';')).replace(QString(" "), 
 						 QString("")).replace(QString("/"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
-			//std::cout<<"\nNumber: " << number << "\n";
 			while (number % 2 == 0 && number != 0){ 
 				number /= 2; divider++;
-				//std::cout<<"number: " << number << "\t divider: " << divider << "\n";
 			}
-			// divider--; divider--;
-			//std::cout<<"number: " << number << "\t divider: " << divider << "\n";
+
 			if (ok && number == 1) {
 				//no encoding errors and an even number, so we proceed.
 
@@ -87,8 +83,6 @@ void Optimizer::strengthReduce()
 				m_fileContents[x].append(shift);
 				m_linesModified++;
 			}
-
-			//delete line;
 		}
 	}
 }
