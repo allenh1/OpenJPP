@@ -8,7 +8,7 @@ class Compiler
 {
 public:
 	Compiler(QList<QString> fileContents);
-	~Compiler(){ delete m_dataTypes; }
+	~Compiler(){ delete m_pDataTypes; }
 
 	const QList<QString> & getFile();
 
@@ -22,7 +22,11 @@ private:
 
 	QString m_className;
 	QList<QString> m_fileContents;
-	QList<QString> * m_dataTypes;
+	QList<QString> * m_pDataTypes;
+
+	bool isDataType(QString * line);
+
+	const QString & getDataType(QString * line);
 
 	void process();
 	void convertPointers();

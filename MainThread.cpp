@@ -1,6 +1,7 @@
-#include "MainThread.h"
 #include <QTextStream>
 #include <cstdlib>
+
+#include "MainThread.h"
 
 void MainThread::run()
 {
@@ -17,10 +18,10 @@ void MainThread::run()
 			asList->push_back(in.readLine());
 	}
 
-	Optimizer *pOptimizer = new Optimizer(*asList);
-	pOptimizer->compile();
-	std::cout << "Compile finished. Lines changed: " << pOptimizer->getLinesModified() << "\n";
-	delete pOptimizer;
+	Compiler *pCompiler = new Compiler(*asList);
+	pCompiler->compile();
+	std::cout << "Compile finished. Lines changed: " << pCompiler->getLinesModified() << std::endl;
+	delete pCompiler;
 
 	Q_EMIT(finished());
 }//end run

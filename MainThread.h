@@ -5,16 +5,17 @@
 #include <QtCore>
 #include <QObject>
 #include <QThread>
-#include "optimizer.h"
+
+#include "compiler.h"
 
 class MainThread : public QObject
 {
 	Q_OBJECT
 public:
-	MainThread(int argc, QString argv, QObject * parent = 0) :
+	MainThread(int argc, QString argv) :
+		QObject(0),
 	    m_argc(argc),
-		m_argv(argv),
-		QObject(parent)
+		m_argv(argv)
 	{
 		asList = new QList<QString>();
 		m_pThread = new QThread();

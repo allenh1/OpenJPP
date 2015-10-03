@@ -1,4 +1,4 @@
-#include "Compiler.h"
+#include "compiler.h"
 
 Compiler::Compiler(QList<QString> fileContents)
 {
@@ -29,7 +29,7 @@ void Compiler::process()
 	//TODO: inline(), 
 }
 
-inline bool isDataType(QString * line) {
+bool Compiler::isDataType(QString * line) {
 	for (int x = 0; x < m_pDataTypes->size(); ++x) {
 		if (line->contains(m_pDataTypes->at(x))) {
 			return true;
@@ -39,7 +39,7 @@ inline bool isDataType(QString * line) {
 	return false;
 }
 
-const QString & getDataType(QString * line) {
+const QString & Compiler::getDataType(QString * line) {
 	for (int x = 0; x < m_pDataTypes->size(); ++x) {
 		if (line->contains(m_pDataTypes->at(x)))
 			return m_pDataTypes->at(x);
@@ -55,12 +55,11 @@ void Compiler::convertPointers() {
 		if (m_fileContents[x].contains("/**"))
 			while (!m_fileContents[x++].contains("*/")) { /** just chill **/ }
 
-		if (m_fileContents[x].contains("*") && isDataType(m_fileContents[x])) {
-			if (indexOf("*") < indexOf(getDataType(m_fileContents[x]))) {
+		if (m_fileContents[x].contains("*") && isDataType(&m_fileContents[x])) {
+			if (m_fileContents.indexOf("*") < m_fileContents[x].indexOf(getDataType(&m_fileContents[x]))) {
 				//we mean to take the value
 			}
 			QString * line = &m_fileContents[x];
-			if (!m_fileContents[x].contains(line->))
 		}
 	}
 }
@@ -133,7 +132,7 @@ void Compiler::strengthReduce()
 
 void Compiler::compile()
 {
-	optimize();
+	process();
 
 	QString filename = m_className;
 	filename = filename.append(".java");
