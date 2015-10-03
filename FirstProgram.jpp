@@ -1,0 +1,14 @@
+/**
+ * This is the first ever OpenJava++ program! Maybe one day it will compile. :)
+ */
+
+public class FirstClass
+{
+	public static void main(String[] args) {
+		char * myString = new char[5];
+
+		for (int x = 0; *myString != 0; ++myString, ++x){}
+
+		System.out.println("Length of \"Hello\" is " + x + ".");
+	}
+}

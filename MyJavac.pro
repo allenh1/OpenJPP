@@ -1,7 +1,7 @@
 QT += core
 QT -= gui
 
-TARGET = MyJavac
+TARGET = OpenJ++
 CONFIG += console c++11
 CONFIG -= app_bundle
 
@@ -9,7 +9,7 @@ TEMPLATE = app
 
 SOURCES += main.cc \
 		   MainThread.cpp \
-		   optimizer.cpp
+		   compiler.cpp
 
-HEADERS += optimizer.h \
+HEADERS += compiler.h \
 		   MainThread.h

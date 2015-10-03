@@ -4,11 +4,11 @@
 #include <QList>
 #include <QTextStream>
 
-class Optimizer
+class Compiler
 {
 public:
-	Optimizer(QList<QString> fileContents);
-	~Optimizer(){}
+	Compiler(QList<QString> fileContents);
+	~Compiler(){ delete m_dataTypes; }
 
 	const QList<QString> & getFile();
 
@@ -22,7 +22,9 @@ private:
 
 	QString m_className;
 	QList<QString> m_fileContents;
+	QList<QString> * m_dataTypes;
 
-	void optimize();
+	void process();
+	void convertPointers();
 	void strengthReduce();
 };

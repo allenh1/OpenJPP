@@ -1,6 +1,6 @@
-#include "optimizer.h"
+#include "Compiler.h"
 
-Optimizer::Optimizer(QList<QString> fileContents)
+Compiler::Compiler(QList<QString> fileContents)
 {
 	m_status = true; //initially, we're good (hopefully)
 	m_fileContents = fileContents; 
@@ -13,22 +13,66 @@ Optimizer::Optimizer(QList<QString> fileContents)
 	m_className = * line;
 	m_className.remove("public class ");
 	m_className.resize(m_className.indexOf(' '));
+
+	//! Add the data types we will convert to pointers.
+
+	m_pDataTypes = new QList<QString>();
+	m_pDataTypes->push_back(QString("NULL"));
+	m_pDataTypes->push_back(QString("char"));
+	m_pDataTypes->push_back(QString("int"));
+	m_pDataTypes->push_back(QString("double"));
 }
 
-void Optimizer::optimize()
+void Compiler::process()
 {
 	strengthReduce();
 	//TODO: inline(), 
 }
 
-void Optimizer::strengthReduce()
+inline bool isDataType(QString * line) {
+	for (int x = 0; x < m_pDataTypes->size(); ++x) {
+		if (line->contains(m_pDataTypes->at(x))) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+const QString & getDataType(QString * line) {
+	for (int x = 0; x < m_pDataTypes->size(); ++x) {
+		if (line->contains(m_pDataTypes->at(x)))
+			return m_pDataTypes->at(x);
+	}
+	// Some reason was not found, so return the 
+	return m_pDataTypes->at(0);
+}
+
+void Compiler::convertPointers() {
+	QList<QString> pointerNames;
+
+	for (int x = 0; x < m_fileContents.size(); ++x) {
+		if (m_fileContents[x].contains("/**"))
+			while (!m_fileContents[x++].contains("*/")) { /** just chill **/ }
+
+		if (m_fileContents[x].contains("*") && isDataType(m_fileContents[x])) {
+			if (indexOf("*") < indexOf(getDataType(m_fileContents[x]))) {
+				//we mean to take the value
+			}
+			QString * line = &m_fileContents[x];
+			if (!m_fileContents[x].contains(line->))
+		}
+	}
+}
+
+void Compiler::strengthReduce()
 {
 	//This optimization replaces multiplication/division by multiples of 2 with a bit shift.
 
 	for (int x = 0; x < m_fileContents.size(); ++x)
 	{
-		//Skip comments, we assume they are denoted by "**"
-		if (m_fileContents[x].contains("**"))
+		//Skip comments, we assume they are denoted by "/**"
+		if (m_fileContents[x].contains("/**"))
 			while (!m_fileContents[x++].contains("*/")) { /** just chill **/ }
 
 		if (m_fileContents[x].contains("*"))
@@ -87,7 +131,7 @@ void Optimizer::strengthReduce()
 	}
 }
 
-void Optimizer::compile()
+void Compiler::compile()
 {
 	optimize();
 
@@ -137,5 +181,5 @@ void Optimizer::compile()
 		std::cout<<"Warning: errors may have occured.\n";
 }
 
-const int & Optimizer::getLinesModified(){ return m_linesModified; }
-const QString & Optimizer::getClassName(){ return m_className; }
+const int & Compiler::getLinesModified(){ return m_linesModified; }
+const QString & Compiler::getClassName(){ return m_className; }
