@@ -8,30 +8,38 @@ Compiler::Compiler(QList<QString> fileContents)
 	int x = 0; QString *line = NULL;//initialize as null.
 
 	while (!fileContents[x].contains("public class"))
-		line = &fileContents[++x];
-	m_className = * line;
-	m_className = * line;
+		line = &fileContents[x++];
+	m_className = *line;
+	m_className = QString("FirstClass");
+	std::cout<<"Line with class name: "<<m_className.toStdString()<<std::endl;
 	m_className.remove("public class ");
-	m_className.resize(m_className.indexOf(' '));
-
+	std::cout<<"Class name: "<<m_className.toStdString()<<std::endl;
 	//! Add the data types we will convert to pointers.
 
-	m_pDataTypes = new QList<QString>();
-	m_pDataTypes->push_back(QString("NULL"));
-	m_pDataTypes->push_back(QString("char"));
-	m_pDataTypes->push_back(QString("int"));
-	m_pDataTypes->push_back(QString("double"));
+	m_pDataTypes = new QList<jpp_pointer>();
+	jpp_pointer Null, Char, Int, Double;
+
+	Null.type_name = QString("NULL");
+	Double.type_name = QString("double"); Double.java_class = QString("CDoublePointer");
+	  Char.type_name = QString("char");     Char.java_class = QString("CCharPointer");
+	   Int.type_name = QString("int");       Int.java_class = QString("CIntPointer");
+
+	m_pDataTypes->push_back(Null);
+	m_pDataTypes->push_back(Double);
+	m_pDataTypes->push_back(Char);
+	m_pDataTypes->push_back(Int);
 }
 
 void Compiler::process()
 {
+	convertPointers();
 	strengthReduce();
 	//TODO: inline(), 
 }
 
 bool Compiler::isDataType(QString * line) {
 	for (int x = 0; x < m_pDataTypes->size(); ++x) {
-		if (line->contains(m_pDataTypes->at(x))) {
+		if (line->contains(m_pDataTypes->at(x).type_name)) {
 			return true;
 		}
 	}
@@ -41,11 +49,20 @@ bool Compiler::isDataType(QString * line) {
 
 const QString & Compiler::getDataType(QString * line) {
 	for (int x = 0; x < m_pDataTypes->size(); ++x) {
-		if (line->contains(m_pDataTypes->at(x)))
-			return m_pDataTypes->at(x);
+		if (line->contains(m_pDataTypes->at(x).type_name))
+			return m_pDataTypes->at(x).type_name;
 	}
 	// Some reason was not found, so return the 
-	return m_pDataTypes->at(0);
+	return m_pDataTypes->at(0).type_name;
+}
+
+const QString & Compiler::getJavaClass(QString * line) {
+	for (int x = 0; x < m_pDataTypes->size(); ++x) {
+		if (line->contains(m_pDataTypes->at(x).type_name))
+			return m_pDataTypes->at(x).java_class;
+	}
+	// Some reason was not found, so return the 
+	return m_pDataTypes->at(0).type_name;
 }
 
 void Compiler::convertPointers() {
@@ -56,10 +73,47 @@ void Compiler::convertPointers() {
 			while (!m_fileContents[x++].contains("*/")) { /** just chill **/ }
 
 		if (m_fileContents[x].contains("*") && isDataType(&m_fileContents[x])) {
-			if (m_fileContents.indexOf("*") < m_fileContents[x].indexOf(getDataType(&m_fileContents[x]))) {
-				//we mean to take the value
-			}
 			QString * line = &m_fileContents[x];
+			if (line->indexOf("*") < line->indexOf(getDataType(line))) {
+				//we mean to take the value
+			} else if (line->indexOf("*") > line->indexOf(getDataType(line))) {
+				//we mean to make a pointer.
+				
+				/**
+				 * There are three cases here:
+				 *   1. The string is something of the form
+				 *      "<type> * <name> = new <type>();"
+				 *   2. The string is of the form
+				 *   	"<type> * name;"
+				 *   3. The string is of the form
+				 *   	"<type> * name = new <type>[size];"  
+				 */
+
+				if (line->contains("new") && !line->contains("[")) {
+
+				} else if (line->contains("new") && line->contains("[")) {								
+					QString equiv_class = getJavaClass(line);
+					QString number = line->mid(line->indexOf("[") + 1, line->indexOf("]"));
+					number.replace(QString("]"), QString(""));
+					bool addSemiColon = false;
+					if (number.contains(";"))
+						addSemiColon = true;
+					number.replace(QString(";"), QString(""));
+					line->replace(QString("*"), QString(""));
+					line->replace(getDataType(line), equiv_class);
+
+					QString parens("("); parens += number + QString(")");
+					if (addSemiColon)
+						parens += QString(";");
+					line->replace(line->mid(line->indexOf("["), line->indexOf("]")), parens);
+					m_linesModified++;
+				} else {
+					// QString equiv_class = getJavaClass(line);
+					// line->replace(QString("*"), QString(""));
+					// line->replace(getDataType(line), equiv_class);
+					m_linesModified++;
+				}
+			}
 		}
 	}
 }

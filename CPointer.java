@@ -9,24 +9,27 @@ public abstract class CPointer
     private byte[] memory;
     private boolean isSet;
 
+    private int index;
     private int size;
 
     public CPointer() {
         isSet  = false;
         memory = new byte[0];
-        size = 0;
+        size = 0; index = 0;
     }
 
     public CPointer(CPointer other) {
         memory = other.getBytes();
         isSet  = other.isSet();
         size   = other.getSize();
+        index  = other.getIndex();
     }
 
     public CPointer (int size) {
         memory    = new byte[size];
         this.size = size;
         isSet     = true;
+        index     = 0;
     }
 
     /**
@@ -51,12 +54,15 @@ public abstract class CPointer
     public int getSize(){ return size; }
 
     /**
+     * This returns the current index of the pointer.
+     * 
+     * @return     Current location after beginning. 
+     */
+    public int getIndex(){ return index;}
+    /**
      * Increment the pointer. We do not change location in memory.
      */
-    public void PlusPlus() {
-        for (int x = 1; x < memory.length; ++x)
-            memory[x - 1] = memory[x];
-    }
+    public void PlusPlus() { index++; }
 
     public void setBytes(byte[] other) {
         memory = new byte[other.length];
@@ -65,8 +71,19 @@ public abstract class CPointer
         isSet = true;
     }
     public byte get(int index) { return (index < memory.length) ? memory[index] : 0; }
+    public byte value() { return memory[index]; }
+    
+    /**
+     * Makes a pointer of a particular type and returns it.
+     * This is basically a converter. Think of an address
+     * function.
+     *
+     * @param      o     Object at which to point.
+     *
+     * @return     A byte array containing o.
+     */
+    public abstract byte[] javaToCPointer(Object o);
 
-    public abstract byte[] javaToCPointer(Object o); 
     /**
      * This is a "malloc" function. Though we can't really
      * create a <t>real</t> malloc function, this will do.
