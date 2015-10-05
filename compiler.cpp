@@ -21,8 +21,8 @@ Compiler::Compiler(QList<QString> fileContents)
 
 	Null.type_name = QString("NULL");
 	Double.type_name = QString("double"); Double.java_class = QString("CDoublePointer");
-	  Char.type_name = QString("char");     Char.java_class = QString("CCharPointer");
-	   Int.type_name = QString("int");       Int.java_class = QString("CIntPointer");
+	Char.type_name = QString("char");     Char.java_class = QString("CCharPointer");
+	Int.type_name = QString("int");       Int.java_class = QString("CIntPointer");
 
 	m_pDataTypes->push_back(Null);
 	m_pDataTypes->push_back(Double);
@@ -78,7 +78,7 @@ void Compiler::convertPointers() {
 				//we mean to take the value
 			} else if (line->indexOf("*") > line->indexOf(getDataType(line))) {
 				//we mean to make a pointer.
-				
+
 				/**
 				 * There are three cases here:
 				 *   1. The string is something of the form
@@ -134,7 +134,7 @@ void Compiler::strengthReduce()
 			bool ok;
 			QString * line = &m_fileContents[x];
 			int number = line->mid(line->indexOf('*'), line->indexOf(';')).replace(QString(" "), 
-						 QString("")).replace(QString("*"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
+					QString("")).replace(QString("*"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
 			if (ok && number % 2 == 0) {
 				//no encoding errors and an even number, so we proceed.
 				int shifter = 0;
@@ -166,7 +166,7 @@ void Compiler::strengthReduce()
 			bool ok; int divider = 0;
 			QString * line = &m_fileContents[x];
 			int number = line->mid(line->indexOf('/'), line->indexOf(';')).replace(QString(" "), 
-						 QString("")).replace(QString("/"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
+					QString("")).replace(QString("/"), QString("")).replace(QString(";"), QString("")).toInt(&ok);
 			while (number % 2 == 0 && number != 0){ 
 				number /= 2; divider++;
 			}

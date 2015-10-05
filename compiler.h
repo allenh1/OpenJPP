@@ -14,30 +14,30 @@ struct jpp_pointer {
 
 class Compiler
 {
-public:
-	Compiler(QList<QString> fileContents);
-	~Compiler(){ delete m_pDataTypes; }
+	public:
+		Compiler(QList<QString> fileContents);
+		~Compiler(){ delete m_pDataTypes; }
 
-	const QList<QString> & getFile();
-	const QString & getClassName();
-	void compile();
+		const QList<QString> & getFile();
+		const QString & getClassName();
+		void compile();
 
-	const int & getLinesModified();
-private:
-	bool m_status;
-	int m_linesModified;
+		const int & getLinesModified();
+	private:
+		bool m_status;
+		int m_linesModified;
 
-	QString m_className;
-	QList<QString> m_fileContents;
-	QList<jpp_pointer> * m_pDataTypes;
+		QString m_className;
+		QList<QString> m_fileContents;
+		QList<jpp_pointer> * m_pDataTypes;
 
-	bool isDataType(QString * line);
+		bool isDataType(QString * line);
 
-	const QString & getDataType(QString * line);
-	const QString & getJavaClass(QString * line);
+		const QString & getDataType(QString * line);
+		const QString & getJavaClass(QString * line);
 
-	void process();
-	void convertPointers();
-	void strengthReduce();
+		void process();
+		void convertPointers();
+		void strengthReduce();
 };
 #endif
